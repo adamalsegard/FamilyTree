@@ -1,0 +1,34 @@
+{
+  "name": "familytree",
+  "version": "1.0.0",
+  "description": "Visualization of my family tree in WebGL",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js:static/bundle.js --live",
+    "build": "browserify index.js > static/bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamalsegard/FamilyTree.git"
+  },
+  "keywords": [
+    "familyTree",
+    "hobby",
+    "webGL",
+    "justforfun"
+  ],
+  "author": "Adam Alsegard",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/adamalsegard/FamilyTree/issues"
+  },
+  "homepage": "https://github.com/adamalsegard/FamilyTree#readme",
+  "dependencies": {
+    "browserify": "^16.5.1",
+    "budo": "^11.6.3",
+    "detector-webgl": "^2.0.0",
+    "googleapis": "^39.2.0",
+    "three": "^0.115.0"
+  }
+}
