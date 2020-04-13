@@ -11,70 +11,62 @@ var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
 /**
  * Export funciton to read spreadsheet
  */
-exports.readSpreadSheet = function () {
+exports.readSpreadSheet = async () => {
     // Init Google API client
-    gapi.load('client:auth2', initClient);
+    const loadGapiClient = new Promise((resolve, reject) => {
+        gapi.load('client:auth2', resolve);
+    });
+    return loadGapiClient.then(async () => {
+        return await initClient();
+    })
 };
 
 /**
  *  Initializes the API client library and sets up sign-in state listeners.
  */
-function initClient() {
-    gapi.client.init({
+async function initClient() {
+    var res;
+    await gapi.client.init({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES
-    }).then(function () {
+    }).then(async () => {
+        // Sign in if needed
         if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            // Sign in
             gapi.auth2.getAuthInstance().signIn();
         }
 
-        // Read entries
-        listEntries();
+        // Read entries into global var
+        res = await getEntries();
 
-        // Sign out
+        // Sign out when we got all we need
         gapi.auth2.getAuthInstance().signOut();
-
-    }, function(error) {
-        appendPre(JSON.stringify(error, null, 2));
+    }, (error) => {
+        console.log(JSON.stringify(error, null, 2));
     });
+    return res;
 }
 
 /**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
-}
-
-/**
- * Print the content of the spreadsheet:
+ * Read the content of the spreadsheet:
  * @see https://docs.google.com/spreadsheets/d/1K18hdrbI2Ge7I4X6MKJLN46lDbVLPaCYBlwDwIoiyYs/edit
  */
-function listEntries() {
-    gapi.client.sheets.spreadsheets.values.get({
+async function getEntries() {
+    var res;
+    await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: '1K18hdrbI2Ge7I4X6MKJLN46lDbVLPaCYBlwDwIoiyYs',
-        range: 'Family!A2:B',
-    }).then(function(response) {
+        range: 'Family!A2:G',
+    }).then((response) => {
         var range = response.result;
         if (range.values.length > 0) {
-            appendPre('Name:, Date of Birth:');
-            for (i = 0; i < range.values.length; i++) {
-                var row = range.values[i];
-                // Print columns A and B, which correspond to indices 0 and 1.
-                appendPre(row[0] + ', ' + row[1]);
-            }
+            // Store the result
+            res = range.values;
         } else {
-            appendPre('No data found.');
+            console.log('No data found.');
         }
-    }, function(response) {
-        appendPre('Error: ' + response.result.error.message);
+    }, (response) => {
+        console.log('Error: ' + response.result.error.message);
     });
+    return res;
 }

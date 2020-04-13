@@ -80,8 +80,20 @@ function onDocumentLoaded() {
     var cube = new THREE.Mesh(geometry, material);
     treeGroup.add(cube);
 
-    // TODO: create Family Tree nodes
-    Reader.readSpreadSheet();
+    // Read Google spreadsheet
+    let readFunc = new Promise((resolve, reject) => {
+        try {
+            var res = Reader.readSpreadSheet();
+            resolve(res);
+        } catch (error) {
+            reject(error);
+        }
+    });
+    readFunc.then((result) => {
+        console.log("Result: " + result);
+    }, (error) => {
+        console.log("Rejected! " + error);
+    });
 
     // Add object group to scene
     scene.add(treeGroup);
