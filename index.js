@@ -11,6 +11,7 @@
 var isWebglEnabled = require('detector-webgl');
 var THREE = require('three');
 var Navigation = require('./logic/navigation');
+var Reader = require('./logic/reader_browser');
 
 // Check if browser supports WebGL before rendering anything.
 if (!isWebglEnabled) {
@@ -29,7 +30,6 @@ var camera,
 // Set up listeners.
 document.addEventListener('DOMContentLoaded', onDocumentLoaded, false);
 window.addEventListener('resize', onWindowResize, false);
-window.addEventListener('error', onError);
 
 
 /**
@@ -81,6 +81,7 @@ function onDocumentLoaded() {
     treeGroup.add(cube);
 
     // TODO: create Family Tree nodes
+    Reader.readSpreadSheet();
 
     // Add object group to scene
     scene.add(treeGroup);
@@ -99,8 +100,4 @@ function onWindowResize() {
     Navigation.update(camera.position.z, window.innerWidth);
 
     renderer.render(scene, camera);
-}
-
-function onError(e, url, line) {
-    alert('Renderer encountered an error: \n' + e.message);
 }
