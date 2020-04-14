@@ -12,6 +12,7 @@ var isWebglEnabled = require('detector-webgl');
 var THREE = require('three');
 var Navigation = require('./logic/navigation');
 var Reader = require('./logic/reader_browser');
+var Tree = require('./logic/tree');
 
 // Check if browser supports WebGL before rendering anything.
 if (!isWebglEnabled) {
@@ -61,7 +62,7 @@ function onDocumentLoaded() {
         0.1,
         1000
     );
-    camera.position.z = 100;
+    camera.position.z = 300;
     scene.add(camera);
 
     // Set up the Renderer
@@ -72,13 +73,7 @@ function onDocumentLoaded() {
 
     // Create root tree object that will be used for transforms.
     treeGroup = new THREE.Group();
-    Navigation.setupNavigation(treeGroup, camera.position.z, window.innerWidth);
-
-    // Add simple test box
-    var geometry = new THREE.BoxGeometry(10, 10, 1);
-    var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    var cube = new THREE.Mesh(geometry, material);
-    treeGroup.add(cube);
+    Navigation.setupNavigation(treeGroup, camera, window);
 
     // Read Google spreadsheet
     let readFunc = new Promise((resolve, reject) => {
@@ -90,9 +85,9 @@ function onDocumentLoaded() {
         }
     });
     readFunc.then((result) => {
-        console.log("Result: " + result);
+        Tree.constructFamilyTree(result, treeGroup);
     }, (error) => {
-        console.log("Rejected! " + error);
+        console.log("Error while reading spreadsheet: " + error);
     });
 
     // Add object group to scene
@@ -107,9 +102,10 @@ function onDocumentLoaded() {
  */
 function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
+
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    Navigation.update(camera.position.z, window.innerWidth);
+    Navigation.update(window);
 
-    renderer.render(scene, camera);
+    requestAnimationFrame(renderLoop);
 }
