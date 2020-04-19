@@ -60,7 +60,7 @@ function onDocumentLoaded() {
         45,
         window.innerWidth / window.innerHeight,
         0.1,
-        1000
+        10000
     );
     camera.position.z = 300;
     scene.add(camera);
@@ -75,6 +75,18 @@ function onDocumentLoaded() {
     treeGroup = new THREE.Group();
     Navigation.setupNavigation(treeGroup, camera, window);
 
+    var pageTitleContainer = document.querySelector("#titleContainer");
+    var div = document.createElement("div");
+    div.className = "pageTitle";
+    var textNode = document.createTextNode("Alsegard Family Tree");
+    div.appendChild(textNode);
+
+    // Place globally
+    div.style.top = "1em";
+    div.style.left = (window.innerWidth - div.offsetWidth) / 2 + "px";
+    //console.log("Title div style: (" + div.style.left + ", " + div.style.top + ")");
+    pageTitleContainer.appendChild(div);
+
     // Read Google spreadsheet
     let readFunc = new Promise((resolve, reject) => {
         try {
@@ -85,7 +97,7 @@ function onDocumentLoaded() {
         }
     });
     readFunc.then((result) => {
-        Tree.constructFamilyTree(result, treeGroup);
+        Tree.constructFamilyTree(result, treeGroup, camera);
     }, (error) => {
         console.log("Error while reading spreadsheet: " + error);
     });

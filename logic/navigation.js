@@ -1,7 +1,9 @@
 var THREE = require('three');
+var Utils = require('./utils');
 
 // Global variables
 var transformGroup,
+    textContainer,
     camera,
     window,
     oldWorldPos,
@@ -12,6 +14,7 @@ exports.setupNavigation = function (rootGroup, cam, win) {
     transformGroup = rootGroup;
     camera = cam;
     window = win;
+    textContainer = document.querySelector("#textContainer");
     document.addEventListener('mousewheel', onDocumentMouseWheel, false);
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -31,17 +34,25 @@ function onDocumentMouseDown(event) {
     // Left button was pressed, store initial mouse pos
     if (event.button == 0) {
         dragIsActive = true;
-        oldWorldPos = getMousePosInWorldCoord(event);
+        var screenPos = new THREE.Vector2(event.clientX, event.clientY);
+        var rootPos = transformGroup.position.clone();
+        oldWorldPos = Utils.screenPosToWorldPos(screenPos, camera, rootPos);
     }
 }
 
 function onDocumentMouseMove(event) {
     // Compute translation
     if (dragIsActive) {
-        var newWorldPos = getMousePosInWorldCoord(event);
+        var screenPos = new THREE.Vector2(event.clientX, event.clientY);
+        var rootPos = transformGroup.position.clone();
+        var newWorldPos = Utils.screenPosToWorldPos(screenPos, camera, rootPos);
         var diff = newWorldPos.clone().sub(oldWorldPos);
+        // Move scene content in world space
         transformGroup.position.x += diff.x;
         transformGroup.position.y += diff.y;
+        // Move text overlays in screen space
+        textContainer.style.left = textContainer.offsetLeft + event.movementX + "px";
+        textContainer.style.top = textContainer.offsetTop + event.movementY + "px";
         oldWorldPos.copy(newWorldPos);
     }
 }
@@ -51,20 +62,4 @@ function onDocumentMouseUp() {
     if (dragIsActive) {
         dragIsActive = false;
     }
-}
-
-function getMousePosInWorldCoord(mouseEvent) {
-    // Get mouse pos in [-0.5, 0.5]
-    var mouseX = (mouseEvent.clientX / window.innerWidth) * 2 - 1;
-    var mouseY = -(mouseEvent.clientY / window.innerHeight) * 2 + 1;
-    var vec = new THREE.Vector3(mouseX, mouseY, 0.5);
-
-    // 'Unproject' vector from NDC screen space to world space
-    vec.unproject(camera);
-
-    // Project to correct depth
-    var direction = vec.sub(camera.position).normalize();
-    var distance = transformGroup.position.clone().sub(camera.position).length()
-    var scaled = direction.multiplyScalar(distance);
-    return camera.position.clone().add(scaled);
 }
