@@ -27,32 +27,31 @@ exports.update = function (win) {
 };
 
 function onDocumentMouseWheel(event) {
-    transformGroup.position.z += event.wheelDeltaY * 0.05;
+    updateDepth(event.wheelDeltaY * 0.05);
 }
 
 function onDocumentMouseDown(event) {
     // Left button was pressed, store initial mouse pos
     if (event.button == 0) {
         dragIsActive = true;
-        var screenPos = new THREE.Vector2(event.clientX, event.clientY);
-        var rootPos = transformGroup.position.clone();
-        oldWorldPos = Utils.screenPosToWorldPos(screenPos, camera, rootPos);
+        var oldScreenPos = new THREE.Vector2(event.clientX, event.clientY);
+        oldWorldPos = Utils.screenPosToWorldPos(oldScreenPos, camera, transformGroup.position.z);
     }
 }
 
 function onDocumentMouseMove(event) {
     // Compute translation
     if (dragIsActive) {
-        var screenPos = new THREE.Vector2(event.clientX, event.clientY);
-        var rootPos = transformGroup.position.clone();
-        var newWorldPos = Utils.screenPosToWorldPos(screenPos, camera, rootPos);
-        var diff = newWorldPos.clone().sub(oldWorldPos);
-        // Move scene content in world space
-        transformGroup.position.x += diff.x;
-        transformGroup.position.y += diff.y;
-        // Move text overlays in screen space
-        textContainer.style.left = textContainer.offsetLeft + event.movementX + "px";
-        textContainer.style.top = textContainer.offsetTop + event.movementY + "px";
+        // Get drag difference in world space
+        var newScreenPos = new THREE.Vector2(event.clientX, event.clientY);
+        var newWorldPos = Utils.screenPosToWorldPos(newScreenPos, camera, transformGroup.position.z);
+        var worldDiff = newWorldPos.clone().sub(oldWorldPos);
+        worldDiff.z = 0;
+
+        // Update content
+        updateTranslation(worldDiff);
+
+        // Store new position
         oldWorldPos.copy(newWorldPos);
     }
 }
@@ -62,4 +61,64 @@ function onDocumentMouseUp() {
     if (dragIsActive) {
         dragIsActive = false;
     }
+}
+
+function updateDepth(deltaZ) {
+    // Update the position and size of all cards after zoom.
+    var cards = document.getElementsByClassName("card");
+    for (i = 0; i < cards.length; i++) {
+        // Convert card corner positions from screen space to world space
+        var oldTopLeftScreen = new THREE.Vector2(cards[i].offsetLeft, cards[i].offsetTop);
+        var oldBottomRightScreen = new THREE.Vector2(cards[i].offsetLeft + cards[i].offsetWidth, cards[i].offsetTop + cards[i].offsetHeight);
+
+        var depth = transformGroup.position.z;
+        var oldTopLeftWorld = Utils.screenPosToWorldPos(oldTopLeftScreen, camera, depth);
+        var oldBottomRightWorld = Utils.screenPosToWorldPos(oldBottomRightScreen, camera, depth);
+
+        // Update depth
+        transformGroup.position.z += deltaZ;
+        oldTopLeftWorld.z = transformGroup.position.z;
+        oldBottomRightWorld.z = transformGroup.position.z;
+
+        // Convert back to screen space
+        var newTopLeftScreen = Utils.worldPosToScreenPos(oldTopLeftWorld, camera);
+        var newScreenSize = Utils.worldPosToScreenPos(oldBottomRightWorld, camera);
+        newScreenSize.sub(newTopLeftScreen);
+
+        cards[i].style.left = newTopLeftScreen.x + "px";
+        cards[i].style.top = newTopLeftScreen.y + "px";
+        //cards[i].style.width = newScreenSize.x + "px";
+        //cards[i].style.height = newScreenSize.y + "px";
+    }
+}
+
+function updateTranslation(worldDiff) {
+    // Update the position and size of all cards after zoom.
+    var cards = document.getElementsByClassName("card");
+    for (i = 0; i < cards.length; i++) {
+        // Convert card corner positions from screen space to world space
+        var oldTopLeftScreen = new THREE.Vector2(cards[i].offsetLeft, cards[i].offsetTop);
+        var oldBottomRightScreen = new THREE.Vector2(cards[i].offsetLeft + cards[i].offsetWidth, cards[i].offsetTop + cards[i].offsetHeight);
+
+        var depth = transformGroup.position.z;
+        var oldTopLeftWorld = Utils.screenPosToWorldPos(oldTopLeftScreen, camera, depth);
+        var oldBottomRightWorld = Utils.screenPosToWorldPos(oldBottomRightScreen, camera, depth);
+
+        // Update world positions
+        oldTopLeftWorld.add(worldDiff);
+        oldBottomRightWorld.add(worldDiff);
+
+        // Convert back to screen space
+        var newTopLeftScreen = Utils.worldPosToScreenPos(oldTopLeftWorld, camera);
+        var newScreenSize = Utils.worldPosToScreenPos(oldBottomRightWorld, camera);
+        newScreenSize.sub(newTopLeftScreen);
+
+        cards[i].style.left = newTopLeftScreen.x + "px";
+        cards[i].style.top = newTopLeftScreen.y + "px";
+        //cards[i].style.width = newScreenSize.x + "px";
+        //cards[i].style.height = newScreenSize.y + "px";
+    }
+    // Move scene content in world space
+    transformGroup.position.x += worldDiff.x;
+    transformGroup.position.y -= worldDiff.y;
 }

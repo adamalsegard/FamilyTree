@@ -80,12 +80,12 @@ function onDocumentLoaded() {
     div.className = "pageTitle";
     var textNode = document.createTextNode("Alsegard Family Tree");
     div.appendChild(textNode);
+    pageTitleContainer.appendChild(div);
 
     // Place globally
     div.style.top = "1em";
     div.style.left = (window.innerWidth - div.offsetWidth) / 2 + "px";
     //console.log("Title div style: (" + div.style.left + ", " + div.style.top + ")");
-    pageTitleContainer.appendChild(div);
 
     // Read Google spreadsheet
     let readFunc = new Promise((resolve, reject) => {

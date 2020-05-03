@@ -45,6 +45,19 @@ class Person {
         return this.id.localeCompare(other.id);
     }
 
+    createVisualElement() {
+        // Create card container
+        var cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'nameLabel';
+        var textNode = document.createTextNode(this.fullName);
+        labelDiv.appendChild(textNode);
+
+        cardDiv.appendChild(labelDiv);
+        return cardDiv;
+    }
 }
 
 module.exports = {

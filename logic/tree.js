@@ -25,36 +25,38 @@ exports.constructFamilyTree = (values, treeGroup, camera) => {
     }
     var pos = new THREE.Vector3(-340, 0, treeGroup.position.z);
     var baseRedColor = 255;
-    var baseRedColor = 255;
+    var baseSize = new THREE.Vector3(100, 40, 0);
     var textContainerElement = document.querySelector("#textContainer");
 
     // Traverse tree and create graphic elements
     for (i = 0; i < tree.length; i++) {
         // Add rectangular container for each person
-        var geometry = new THREE.BoxGeometry(30, 10, 1);
+        var geometry = new THREE.BoxGeometry(baseSize.x, baseSize.y, baseSize.z);
         var color = new THREE.Color("rgb(" + baseRedColor + ", " + i*5 + ", 0)");
         var material = new THREE.MeshBasicMaterial( {color: color} );
         var rect = new THREE.Mesh(geometry, material);
         rect.position.copy(pos);
-        pos.add(new THREE.Vector3(40, 0, 0));
+        pos.add(new THREE.Vector3(120, 0, 0));
         baseRedColor -= 15;
 
-
-        // Create text elements
-        var labelDiv = document.createElement('div');
-        labelDiv.className = 'nameLabel';
-        var textNode = document.createTextNode(tree[i].fullName);
-        labelDiv.appendChild(textNode);
+        var cardDiv = tree[i].createVisualElement();
+        textContainerElement.appendChild(cardDiv);
 
         // Convert containers world space placement to screen space
-        var screenPos = Utils.worldPosToScreenPos(rect.position.clone(), camera);
+        var halfSize = baseSize.clone().divideScalar(2);
+        var topLeftWorldPos = rect.position.clone();
+        var bottomRightWorldPos = rect.position.clone();
+        topLeftWorldPos.sub(halfSize);
+        bottomRightWorldPos.add(halfSize);
+        var topleftScreenPos = Utils.worldPosToScreenPos(topLeftWorldPos, camera);
+        var screenSpaceSize = Utils.worldPosToScreenPos(bottomRightWorldPos, camera);
+        screenSpaceSize.sub(topleftScreenPos);
 
         // Set the placement of the div
-        labelDiv.style.left = screenPos.x + "px";
-        labelDiv.style.top = screenPos.y + "px";
-
-        textContainerElement.appendChild(labelDiv);
-        //console.log("Add " + tree[i].fullName + " at (" + screenPos.x + ", " + screenPos.y + ")");
+        cardDiv.style.left = topleftScreenPos.x + "px";
+        cardDiv.style.top = topleftScreenPos.y + "px";
+        cardDiv.style.width = screenSpaceSize.x + "px";
+        cardDiv.style.height = screenSpaceSize.y + "px";
 
         // Add to group
         treeGroup.add(rect);
