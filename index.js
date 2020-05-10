@@ -75,6 +75,7 @@ function onDocumentLoaded() {
     treeGroup = new THREE.Group();
     Navigation.setupNavigation(treeGroup, camera, window);
 
+    // Create title card
     var pageTitleContainer = document.querySelector("#titleContainer");
     var div = document.createElement("div");
     div.className = "pageTitle";
@@ -82,10 +83,10 @@ function onDocumentLoaded() {
     div.appendChild(textNode);
     pageTitleContainer.appendChild(div);
 
-    // Place globally
+    // Center card on page and move it to top
     div.style.top = "1em";
     div.style.left = (window.innerWidth - div.offsetWidth) / 2 + "px";
-    //console.log("Title div style: (" + div.style.left + ", " + div.style.top + ")");
+    pageTitleContainer.style.zIndex = 20;
 
     // Read Google spreadsheet
     let readFunc = new Promise((resolve, reject) => {

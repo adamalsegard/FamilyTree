@@ -5,9 +5,43 @@ body {
     font-family: 'Helvetica';
     overflow: hidden;
 }
+
+/* Containers */
+#titleContainer, #textContainer {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+#cardTemplate {
+    display: none;
+}
+
+/* Placement grid */
+.container {
+    margin: 0px;
+    padding: 0px;
+}
+
+.row {
+    display: flex;
+    margin: 0px;
+    padding: 0px;
+}
+
+.col {
+    flex-grow: 1;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* The title card */
 .pageTitle {
     position: absolute;
-    display:block;
+    display: block;
 
     text-align: center;
     font-size: 3em;
@@ -19,6 +53,7 @@ body {
     background-color: rgb(32, 108, 32);
 }
 
+/* Common person card class */
 .card {
     position: absolute;
     display: block;
@@ -27,24 +62,22 @@ body {
     border-radius: 0.5em;
     padding: 0.5em;
     background-color: rgb(56, 56, 56);
+    margin: 0em;
 }
 
-.nameLabel {
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 100%;
+/* Elements within cards */
 
-    color: rgb(232, 232, 232);
-    text-align: center;
+.svgText {
+    fill: rgb(232, 232, 232);
+    text-anchor: middle;
     font-size: 2em;
+    overflow: auto;
 }
 
-#textContainer, #titleContainer {
-    position: absolute;
-    left: 0px;
+.icon {
     top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
+    left: 0px;
+    width: 10%;
+    height: auto;
+    color: rgb(128, 128, 128);
 }

@@ -2,23 +2,44 @@
 <html lang="en">
 
 <head>
-<title>Alsegård Family Tree</title>
-    <meta name="author" content="Adam Alsegård" />
-    <meta name="description" content="An interactive visualization of my family tree, implemented in WebGL." />
     <meta charset=utf-8>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <!-- Font Awesome - personalized kit, latest version -->
-    <script src="https://kit.fontawesome.com/87a5646d74.js" crossorigin="anonymous"></script>
+    <title>Alsegård Family Tree</title>
+    <meta name="author" content="Adam Alsegård" />
+    <meta name="description" content="An interactive visualization of my family tree, implemented in WebGL." />
+
+    <!-- Font Awesome - latest JS version -->
+    <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>
+
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <div id="titleContainer"></div>
-        <div id="textContainer"></div>
+    <!-- Define icons, these are invisible on the page -->
+    <i data-fa-symbol="venus" class="fas fa-venus"></i>
+    <i data-fa-symbol="mars" class="fas fa-mars"></i>
+
+    <!-- Empty containers -->
+    <div id="titleContainer"></div>
+    <div id="textContainer"></div>
+
+    <!-- Card template -->
+    <div id="cardTemplate">
+        <div class="container">
+            <div class="row">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24" id="genderIcon"></svg>
+                </div>
+                <div class="col">
+                    <svg viewBox="24 0 400 60">
+                        <text id="nameLabel" x="50%" y="50%" class="svgText"></text>
+                    </svg>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bundled logic-->

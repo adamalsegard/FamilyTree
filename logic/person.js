@@ -2,26 +2,26 @@
 
 class Person {
     constructor(row) {
-        this.lastName           = row[0];
-        this.birthLastName      = row[1];
-        this.firstName          = row[2];
-        this.middlename         = row[3];
-        this.dateOfBirth        = row[4];
-        this.dateOfdeath        = row[5];
-        this.father             = row[6];
-        this.mother             = row[7];
+        this.myId               = row[0];
+        this.lastName           = row[1];
+        this.birthLastName      = row[2];
+        this.firstName          = row[3];
+        this.middleNames        = row[4];
+        this.gender             = row[5];
+        this.dateOfBirth        = row[6];
+        this.dateOfDeath        = row[7];
+        this.father             = row[8];
+        this.mother             = row[9];
+        this.birthPlace         = row[10];
+        this.residence          = row[11];
     }
 
     get id() {
-        return this.firstName + this.lastName + this.dateOfBirth;
-    }
-
-    get parentId() {
-        return this.father + this.mother;
+        return this.myId;
     }
 
     get fullName() {
-        var mid = this.middlename.length > 0 ? mid = this.middlename + " " : "";
+        var mid = this.middleNames.length > 0 ? mid = this.middleNames + " " : "";
         return this.firstName + " " + mid + this.lastName;
     }
 
@@ -32,6 +32,11 @@ class Person {
         else {
             return "";
         }
+    }
+
+    constructId() {
+        var dob = this.dateOfBirth.split("-");
+        this.myId = this.lastName.charAt(0) + this.firstName + dob[0];
     }
 
     print() {
@@ -46,16 +51,26 @@ class Person {
     }
 
     createVisualElement() {
-        // Create card container
-        var cardDiv = document.createElement('div');
-        cardDiv.className = 'card';
+        // Create a clone of the card template
+        var cardDiv = document.querySelector("#cardTemplate").cloneNode(true);
+        cardDiv.className = "card";
+        cardDiv.setAttribute("id", this.id);
 
-        var labelDiv = document.createElement('div');
-        labelDiv.className = 'nameLabel';
+        /**** Set all person attributes ****/
+        // Gender icon
+        var genderElement = cardDiv.querySelector("#genderIcon");
+        if (this.gender == "M") {
+            genderElement.innerHTML = "<use xlink:href='#mars'/>";
+        }
+        else if (this.gender == "F") {
+            genderElement.innerHTML = "<use xlink:href='#venus'/>";
+        }
+
+        // Name label
+        var nameElement = cardDiv.querySelector("#nameLabel");
         var textNode = document.createTextNode(this.fullName);
-        labelDiv.appendChild(textNode);
+        nameElement.appendChild(textNode);
 
-        cardDiv.appendChild(labelDiv);
         return cardDiv;
     }
 }
