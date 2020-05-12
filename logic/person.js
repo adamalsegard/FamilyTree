@@ -21,17 +21,22 @@ class Person {
     }
 
     get fullName() {
-        var mid = this.middleNames.length > 0 ? mid = this.middleNames + " " : "";
-        return this.firstName + " " + mid + this.lastName;
+        return this.firstName + " " + this.lastName;
     }
 
-    get unmarriedName() {
-        if (this.birthLastName.length > 0) {
-            return " (" + this.birthLastName + ")";
-        }
-        else {
-            return "";
-        }
+    get extraNames() {
+        var mid = this.middleNames.length > 0 ? this.middleNames : "";
+        var unmarried = this.birthLastName.length > 0 ? "(" + this.birthLastName + ")" : "";
+        var dash = mid.length > 0 && unmarried.length > 0 ? " - " : "";
+        return mid + dash + unmarried;
+    }
+
+    get birth() {
+        return this.dateOfBirth + ",\xa0\xa0\xa0\xa0" + this.birthPlace;
+    }
+
+    get death() {
+        return typeof this.dateOfDeath !== "undefined" ? this.dateOfDeath : "";
     }
 
     constructId() {
@@ -68,8 +73,28 @@ class Person {
 
         // Name label
         var nameElement = cardDiv.querySelector("#nameLabel");
-        var textNode = document.createTextNode(this.fullName);
-        nameElement.appendChild(textNode);
+        var nameText = document.createTextNode(this.fullName);
+        nameElement.appendChild(nameText);
+
+        // Middle names and unmarried last name labels
+        var extraNamesElement = cardDiv.querySelector("#extraNames");
+        var extraNamesText = document.createTextNode(this.extraNames);
+        extraNamesElement.appendChild(extraNamesText);
+
+        // Date of birth label
+        var birthElement = cardDiv.querySelector("#birthLabel");
+        var birthText = document.createTextNode(this.birth);
+        birthElement.appendChild(birthText);
+
+        // Date of death label
+        var deathElement = cardDiv.querySelector("#deathLabel");
+        var deathText = document.createTextNode(this.death);
+        deathElement.appendChild(deathText);
+
+        // Location label
+        var locationElement = cardDiv.querySelector("#locationLabel");
+        var locationText = document.createTextNode(this.residence);
+        locationElement.appendChild(locationText);
 
         return cardDiv;
     }

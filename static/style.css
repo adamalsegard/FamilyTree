@@ -38,6 +38,10 @@ body {
     padding: 0px;
 }
 
+.attrPanel {
+    margin: 0 1em 0 1em;
+}
+
 /* The title card */
 .pageTitle {
     position: absolute;
@@ -58,26 +62,38 @@ body {
     position: absolute;
     display: block;
 
-    border: solid 0.1em rgb(108, 108, 108);
-    border-radius: 0.5em;
+    border: solid 0.3em rgb(92, 92, 92);
+    border-radius: 1.0em;
     padding: 0.5em;
     background-color: rgb(56, 56, 56);
     margin: 0em;
 }
 
 /* Elements within cards */
+.icon {
+    width: 8%;
+    height: auto;
+    color: rgb(128, 128, 128);
+}
 
-.svgText {
+.nameLabel {
     fill: rgb(232, 232, 232);
     text-anchor: middle;
     font-size: 2em;
-    overflow: auto;
+    overflow: visible;
 }
 
-.icon {
-    top: 0px;
-    left: 0px;
-    width: 10%;
-    height: auto;
-    color: rgb(128, 128, 128);
+.extraNamesLabel {
+    fill: rgb(192, 192, 192);
+    text-anchor: middle;
+    font-size: 1.5em;
+    font-style: italic;
+    overflow: visible;
+}
+
+.attrLabel {
+    fill: rgb(192, 192, 192);
+    text-anchor: left;
+    font-size: 1.5em;
+    overflow: hidden;
 }

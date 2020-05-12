@@ -56,7 +56,7 @@ async function getEntries() {
     var res;
     await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: '1K18hdrbI2Ge7I4X6MKJLN46lDbVLPaCYBlwDwIoiyYs',
-        range: 'Family!A2:G',
+        range: 'Family!A2:L',
     }).then((response) => {
         var range = response.result;
         if (range.values.length > 0) {

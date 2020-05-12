@@ -21,6 +21,9 @@
     <!-- Define icons, these are invisible on the page -->
     <i data-fa-symbol="venus" class="fas fa-venus"></i>
     <i data-fa-symbol="mars" class="fas fa-mars"></i>
+    <i data-fa-symbol="birth" class="fas fa-birthday-cake"></i>
+    <i data-fa-symbol="death" class="fas fa-skull-crossbones"></i>
+    <i data-fa-symbol="globe" class="fas fa-globe-europe"></i>
 
     <!-- Empty containers -->
     <div id="titleContainer"></div>
@@ -31,12 +34,47 @@
         <div class="container">
             <div class="row">
                 <div class="icon">
-                    <svg viewBox="0 0 24 24" id="genderIcon"></svg>
+                    <svg viewBox="0 0 1 1" id="genderIcon" width="125%"></svg>
                 </div>
                 <div class="col">
-                    <svg viewBox="24 0 400 60">
-                        <text id="nameLabel" x="50%" y="50%" class="svgText"></text>
+                    <svg viewBox="0 0 400 40">
+                        <text id="nameLabel" x="45%" y="80%" class="nameLabel"></text>
                     </svg>
+                    <svg viewBox="0 0 400 45">
+                        <text id="extraNames" x="45%" y="40%" class="extraNamesLabel"></text>
+                    </svg>
+                </div>
+            </div>
+            <div class="attrPanel">
+                <div class="row">
+                    <div class="icon">
+                        <svg viewBox="0 0 1 1"><use xlink:href='#birth'/></svg>
+                    </div>
+                    <div class="col">
+                        <svg viewBox="0 0 400 40">
+                            <text id="birthLabel" x="7%" y="75%" class="attrLabel"></text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="icon">
+                        <svg viewBox="0 0 1 1"><use xlink:href='#death'/></svg>
+                    </div>
+                    <div class="col">
+                        <svg viewBox="0 0 400 40">
+                            <text id="deathLabel" x="7%" y="75%" class="attrLabel"></text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="icon">
+                        <svg viewBox="0 0 1 1"><use xlink:href='#globe'/></svg>
+                    </div>
+                    <div class="col">
+                        <svg viewBox="0 0 400 40">
+                            <text id="locationLabel" x="7%" y="75%" class="attrLabel"></text>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>

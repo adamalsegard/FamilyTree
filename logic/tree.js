@@ -23,9 +23,9 @@ exports.constructFamilyTree = (values, treeGroup, camera) => {
         // Insert node in tree
         tree.push(person);
     }
-    var pos = new THREE.Vector3(-340, 0, treeGroup.position.z);
+    var pos = new THREE.Vector3(0, -200, treeGroup.position.z);
     var baseRedColor = 255;
-    var baseSize = new THREE.Vector3(100, 40, 0);
+    var baseSize = new THREE.Vector3(120, 60, 0);
     var textContainerElement = document.querySelector("#textContainer");
 
     // Traverse tree and create graphic elements
@@ -36,7 +36,7 @@ exports.constructFamilyTree = (values, treeGroup, camera) => {
         var material = new THREE.MeshBasicMaterial( {color: color} );
         var rect = new THREE.Mesh(geometry, material);
         rect.position.copy(pos);
-        pos.add(new THREE.Vector3(120, 0, 0));
+        pos.add(new THREE.Vector3(0, 70, 0));
         baseRedColor -= 15;
 
         var cardDiv = tree[i].createVisualElement();
