@@ -1,5 +1,14 @@
 'use strict';
 
+function calcAgeInYears(birthDate, otherDate) {
+    var years = otherDate.getFullYear() - birthDate.getFullYear();
+    if (otherDate.getMonth() < birthDate.getMonth() ||
+        (otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate())) {
+        years--;
+    }
+    return years;
+}
+
 class Person {
     constructor(row) {
         this.myId               = row[0];
@@ -20,6 +29,29 @@ class Person {
         return this.myId;
     }
 
+    get age() {
+        let dob = new Date(this.dateOfBirth);
+        let dod = new Date(this.dateOfDeath);
+        if (isNaN(dob)) {
+            // Invalid input
+            return 0;
+        }
+        else if (isNaN(dod)) {
+            // Still alive, return diff in years from todays date
+            let today = new Date(Date.now());
+            return calcAgeInYears(dob, today);
+        }
+        else {
+            // Deceased, return diff to deceased date
+            return calcAgeInYears(dob, dod);
+        }
+    }
+
+    get isDeceased() {
+        let dod = new Date(this.dateOfDeath);
+        return !isNaN(dod);
+    }
+
     get fullName() {
         return this.firstName + " " + this.lastName;
     }
@@ -31,12 +63,16 @@ class Person {
         return mid + dash + unmarried;
     }
 
-    get birth() {
+    get birthStr() {
         return this.dateOfBirth + ",\xa0\xa0\xa0\xa0" + this.birthPlace;
     }
 
-    get death() {
-        return typeof this.dateOfDeath !== "undefined" ? this.dateOfDeath : "";
+    get deathStr() {
+        return this.isDeceased ? this.dateOfDeath + ",\xa0\xa0\xa0\xa0" + this.age + " år" : "";
+    }
+
+    get residenceStr() {
+        return this.isDeceased ? this.residence : this.residence + "\xa0\xa0\xa0\xa0(" + this.age + " år)";
     }
 
     constructId() {
@@ -83,17 +119,17 @@ class Person {
 
         // Date of birth label
         var birthElement = cardDiv.querySelector("#birthLabel");
-        var birthText = document.createTextNode(this.birth);
+        var birthText = document.createTextNode(this.birthStr);
         birthElement.appendChild(birthText);
 
         // Date of death label
         var deathElement = cardDiv.querySelector("#deathLabel");
-        var deathText = document.createTextNode(this.death);
+        var deathText = document.createTextNode(this.deathStr);
         deathElement.appendChild(deathText);
 
         // Location label
         var locationElement = cardDiv.querySelector("#locationLabel");
-        var locationText = document.createTextNode(this.residence);
+        var locationText = document.createTextNode(this.residenceStr);
         locationElement.appendChild(locationText);
 
         return cardDiv;
