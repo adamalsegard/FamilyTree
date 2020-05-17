@@ -10,10 +10,14 @@ exports.screenPosToWorldPos = (screenPos, camera, treeDepth) => {
     // 'Unproject' vector from NDC screen space to world space
     vec.unproject(camera);
 
+    // Get correct distance
+    var l = new THREE.Vector2(vec.x, vec.y).length();
+    var depth = camera.position.z - treeDepth;
+    var dist = Math.sqrt(l*l + depth*depth);
+
     // Project to correct depth
     var direction = vec.sub(camera.position).normalize();
-    var depth = camera.position.z - treeDepth;
-    var scaled = direction.multiplyScalar(depth);
+    var scaled = direction.multiplyScalar(dist);
 
     //Return world space coordinate as Vector3
     return camera.position.clone().add(scaled);

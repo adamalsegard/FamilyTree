@@ -25,8 +25,7 @@ if (!isWebglEnabled) {
  */
 var camera,
     scene,
-    renderer,
-    treeGroup;
+    renderer;
 
 // Set up listeners.
 document.addEventListener('DOMContentLoaded', onDocumentLoaded, false);
@@ -71,9 +70,9 @@ function onDocumentLoaded() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Create root tree object that will be used for transforms.
-    treeGroup = new THREE.Group();
-    Navigation.setupNavigation(treeGroup, camera, window);
+    // Set up navigation with a group element in the DOM.
+    var groupDepth = 0;
+    Navigation.setupNavigation(groupDepth, camera);
 
     // Create title card
     var pageTitleContainer = document.querySelector("#titleContainer");
@@ -98,13 +97,10 @@ function onDocumentLoaded() {
         }
     });
     readFunc.then((result) => {
-        Tree.constructFamilyTree(result, treeGroup, camera);
+        Tree.constructFamilyTree(result, groupDepth, camera);
     }, (error) => {
         console.log("Error while reading spreadsheet: " + error);
     });
-
-    // Add object group to scene
-    scene.add(treeGroup);
 
     // Start render
     requestAnimationFrame(renderLoop);
@@ -118,7 +114,6 @@ function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    Navigation.update(window);
 
     requestAnimationFrame(renderLoop);
 }

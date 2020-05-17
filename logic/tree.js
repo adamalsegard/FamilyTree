@@ -5,7 +5,7 @@ var Person = require('./person');
 /**
  * Export funciton to read spreadsheet
  */
-exports.constructFamilyTree = (values, treeGroup, camera) => {
+exports.constructFamilyTree = (values, groupDepth, camera) => {
     var tree = [];
 
     // Create Family Tree nodes
@@ -23,29 +23,21 @@ exports.constructFamilyTree = (values, treeGroup, camera) => {
         // Insert node in tree
         tree.push(person);
     }
-    var pos = new THREE.Vector3(0, -200, treeGroup.position.z);
-    var baseRedColor = 255;
+    var pos = new THREE.Vector3(0, -200, groupDepth);
     var baseSize = new THREE.Vector3(120, 60, 0);
-    var textContainerElement = document.querySelector("#textContainer");
+    var cardContainer = document.querySelector("#textContainer");
 
     // Traverse tree and create graphic elements
     for (i = 0; i < tree.length; i++) {
-        // Add rectangular container for each person
-        var geometry = new THREE.BoxGeometry(baseSize.x, baseSize.y, baseSize.z);
-        var color = new THREE.Color("rgb(" + baseRedColor + ", " + i*5 + ", 0)");
-        var material = new THREE.MeshBasicMaterial( {color: color} );
-        var rect = new THREE.Mesh(geometry, material);
-        rect.position.copy(pos);
-        pos.add(new THREE.Vector3(0, 70, 0));
-        baseRedColor -= 15;
 
         var cardDiv = tree[i].createVisualElement();
-        textContainerElement.appendChild(cardDiv);
+        cardContainer.appendChild(cardDiv);
 
         // Convert containers world space placement to screen space
         var halfSize = baseSize.clone().divideScalar(2);
-        var topLeftWorldPos = rect.position.clone();
-        var bottomRightWorldPos = rect.position.clone();
+
+        var topLeftWorldPos = pos.clone();
+        var bottomRightWorldPos = pos.clone();
         topLeftWorldPos.sub(halfSize);
         bottomRightWorldPos.add(halfSize);
         var topleftScreenPos = Utils.worldPosToScreenPos(topLeftWorldPos, camera);
@@ -58,7 +50,9 @@ exports.constructFamilyTree = (values, treeGroup, camera) => {
         cardDiv.style.width = screenSpaceSize.x + "px";
         cardDiv.style.height = screenSpaceSize.y + "px";
 
-        // Add to group
-        treeGroup.add(rect);
+        //console.log("Add " + tree[i].fullName + " at (" + topleftScreenPos.x + ", " + topleftScreenPos.y + ")"
+        //    + " with size (" + screenSpaceSize.x + ", " + screenSpaceSize.y + ")");
+
+        pos.add(new THREE.Vector3(0, 70, 0));
     }
 };
