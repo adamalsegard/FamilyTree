@@ -29,7 +29,7 @@
     "budo": "^11.6.3",
     "detector-webgl": "^2.0.0",
     "googleapis": "^39.2.0",
-    "three": "^0.115.0"
+    "three": "^0.125.0"
   },
   "devDependencies": {}
 }
